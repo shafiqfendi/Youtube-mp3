@@ -1,5 +1,6 @@
 import os
 import base64
+import tempfile
 import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
