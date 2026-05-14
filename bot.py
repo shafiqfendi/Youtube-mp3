@@ -40,18 +40,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         cookiefile_path = get_cookiefile()
         try:
             ydl_opts = {
-                'format': 'bestaudio/best',
-                'postprocessors': [{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '0',
-                }],
-                'outtmpl': f'{uuid.uuid4()}.%(ext)s',
-                'quiet': True,
-                'no_warnings': True,
-                # Tambahan: guna cookies kalau ada
-                'cookiefile': cookiefile_path,
-            }
+    'format': 'bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio/best',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '0',
+    }],
+    'outtmpl': f'{uuid.uuid4()}.%(ext)s',
+    'quiet': True,
+    'no_warnings': True,
+    'cookiefile': cookiefile_path,
+    'http_headers': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
+    },
+}
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info_dict = ydl.extract_info(user_message, download=True)
