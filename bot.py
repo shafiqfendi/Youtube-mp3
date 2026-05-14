@@ -39,11 +39,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
         try:
             ydl_opts = {
-                'format': 'bestaudio/best',
+                # Kita letak fallback: Cari m4a dulu, kalau takde cari mana-mana audio, kalau takde jugak amik je video+audio
+                'format': 'bestaudio[ext=m4a]/bestaudio/best', 
                 'postprocessors': [{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',
-                    'preferredquality': '192', # Guna 192kbps untuk elak error jika source audio rendah
+                    'preferredquality': '192',
                 }],
                 'outtmpl': f'{uuid.uuid4()}.%(ext)s',
                 'quiet': True,
@@ -52,13 +53,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 'http_headers': {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                     'Accept-Language': 'en-US,en;q=0.9',
-                },
-                # TRIK PENTING: Tipu YouTube supaya nampak macam request dari Android
-                'extractor_args': {
-                    'youtube': {
-                        'player_client': ['android', 'web']
-                    }
                 }
+                # Bahagian 'extractor_args' yang tipu jadi Android tu kita dah BUANG supaya tak clash dengan cookies PC
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
